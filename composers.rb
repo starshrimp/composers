@@ -8,7 +8,6 @@
 #   name: "Wolfgang Amadeus Mozart", year_born: 1756, year_died: 1791
 # }
 
-@composers = []
 @selected_composers = []
 require_relative './composer_class.rb'
 CSV_DELIMITER = ";"
@@ -20,28 +19,31 @@ def analyse_composers
   composer_lines.each do |composer_line|
     parts = composer_line.split(CSV_DELIMITER)
     composer = Composer.new(parts[0], parts[1], parts[2], parts[3])
-    @composers.push(composer)
+
   end
 end
 def age
   puts "Which people's age do you want to compare: Beethoven, Kant, Mozart? You can enter as many as you like, then type run if you want to get the results."
-  
- 
+
   loop do
     input = gets.chomp.capitalize
     if check_name(input.capitalize) || input == "Run"
-      @composers.each do |composer|
+      Composer.all.each do |composer|
         if composer.first_name.include?(input) || composer.last_name.include?(input)
           @selected_composers.push(composer)
+          Composer.selected
         elsif input == "Run"
-          @selected_composers.each do |composer|
+          Composer.selected.each do |composer|
              puts "#{composer.last_name} grew #{composer.age} years old." 
+
           end
-          @sorted_composers = @selected_composers.sort_by { |composer| -composer.age }
+          @sorted_composers = Composer.selected.sort_by { |composer| -composer.age }
           composer_string =""
           @sorted_composers.each_with_index do |composer, index| 
-            if index != 0 && index < @selected_composers.length 
+            if index == 1 
               composer_string += " grew older than "
+            elsif index != 0 && index < @selected_composers.length 
+              composer_string += " who grew older than "
             end
             if index == (@selected_composers.length - 1)
               composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old." 
@@ -59,7 +61,7 @@ def age
 end
 
 def check_name(input) 
-  @composers.each do |composer|
+  Composer.all.each do |composer|
     if composer.first_name.include?(input) || composer.last_name.to_s.include?(input)
       return true
     end
