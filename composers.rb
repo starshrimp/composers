@@ -8,7 +8,6 @@
 #   name: "Wolfgang Amadeus Mozart", year_born: 1756, year_died: 1791
 # }
 
-@selected_composers = []
 require_relative './composer_class.rb'
 CSV_DELIMITER = ";"
 
@@ -23,29 +22,28 @@ def analyse_composers
   end
 end
 def age
-  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart? You can enter as many as you like, then type run if you want to get the results."
+  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart, Bach, Tschaikowski, Wagner, Chopin? You can enter as many as you like, then type run if you want to get the results."
 
   loop do
     input = gets.chomp.capitalize
+    sorted_composers = Composer.selected.sort_by { |composer| -composer.age }
+    composer_string =""
     if check_name(input.capitalize) || input == "Run"
       Composer.all.each do |composer|
         if composer.first_name.include?(input) || composer.last_name.include?(input)
-          @selected_composers.push(composer)
-          Composer.selected
+          composer.select
         elsif input == "Run"
           Composer.selected.each do |composer|
              puts "#{composer.last_name} grew #{composer.age} years old." 
 
           end
-          @sorted_composers = Composer.selected.sort_by { |composer| -composer.age }
-          composer_string =""
-          @sorted_composers.each_with_index do |composer, index| 
+          Composer.selected.each_with_index do |composer, index| 
             if index == 1 
               composer_string += " grew older than "
-            elsif index != 0 && index < @selected_composers.length 
+            elsif index != 0 && index < Composer.selected.length 
               composer_string += " who grew older than "
             end
-            if index == (@selected_composers.length - 1)
+            if index == (Composer.selected.length - 1)
               composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old." 
             else
               composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old," 
