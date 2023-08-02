@@ -9,57 +9,44 @@
 # }
 
 @composers = []
-@composer_ages = {}
+@selected_composers = []
 require_relative './composer_class.rb'
 CSV_DELIMITER = ";"
 
 def analyse_composers
-
   composers_csv = File.read("composers.csv")
   composer_lines = composers_csv.split("\n")
-
-
 
   composer_lines.each do |composer_line|
     parts = composer_line.split(CSV_DELIMITER)
     composer = Composer.new(parts[0], parts[1], parts[2], parts[3])
     @composers.push(composer)
-
   end
-  p @composers
-  @composers.each do |composer|
-    
-  end
-  puts @composer_ages
 end
 def age
-  
   puts "Which people's age do you want to compare: Beethoven, Kant, Mozart? You can enter as many as you like, then type run if you want to get the results."
   
  
   loop do
-    input = gets.chomp.downcase
-    if check_name(input.capitalize) || input == "run"
+    input = gets.chomp.capitalize
+    if check_name(input.capitalize) || input == "Run"
       @composers.each do |composer|
-        if composer.first_name.downcase.include?(input) || composer.last_name.downcase.include?(input)
-          composer_age = composer.year_died.to_i - composer.year_born.to_i
-          @composer_ages[composer.last_name.downcase] = composer_age
-        elsif input == "run"
-          @composer_ages.each {|key,value| puts "#{key.capitalize} grew #{value} years old." }
-          @composer_ages = @composer_ages.sort_by(&:last).reverse
-          p @composer_ages
+        if composer.first_name.include?(input) || composer.last_name.include?(input)
+          @selected_composers.push(composer)
+        elsif input == "Run"
+          @selected_composers.each do |composer|
+             puts "#{composer.last_name} grew #{composer.age} years old." 
+          end
+          @sorted_composers = @selected_composers.sort_by { |composer| -composer.age }
           composer_string =""
-          @composer_ages.each_with_index do |composer_age, index| 
-            name = composer_age[0]
-            age = composer_age[1]
-            if index != 0 && index < @composer_ages.length 
+          @sorted_composers.each_with_index do |composer, index| 
+            if index != 0 && index < @selected_composers.length 
               composer_string += " grew older than "
             end
-            if index == (@composer_ages.length - 1)
-              composer_string += "#{name.capitalize}, who grew #{age} years old." 
+            if index == (@selected_composers.length - 1)
+              composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old." 
             else
-              composer_string += "#{name.capitalize}, who grew #{age} years old," 
-              puts index
+              composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old," 
             end
           end
           puts composer_string
