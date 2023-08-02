@@ -23,5 +23,6 @@ class Composer
   def length
     @@selected.length
   end
+
 end
 
