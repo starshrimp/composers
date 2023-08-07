@@ -1,14 +1,14 @@
 require_relative './composer_class.rb'
-CSV_DELIMITER = ";"
+require 'csv'
+
 
 def analyse_composers
-  composers_csv = File.read("composers.csv")
-  composer_lines = composers_csv.split("\n")
-
-  composer_lines.each do |composer_line|
-    parts = composer_line.split(CSV_DELIMITER)
-    composer = Composer.new(parts[0], parts[1], parts[2], parts[3])
-
+  CSV.foreach("composers.csv") do |row|
+    first_name = row[0]
+    last_name = row[1]
+    year_born= row[2]
+    year_died = row[3]
+    composer = Composer.new(first_name, last_name, year_born, year_died)
   end
 end
 def age
