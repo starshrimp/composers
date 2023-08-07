@@ -1,34 +1,75 @@
-beethoven = {
-  name: "Ludwig van Beethoven", year_born: 1770, year_died: 1827
-}
-kant = {
-  name: "Immanuel Kant", year_born: 1724, year_died: 1804
-}
-mozart = {
-  name: "Wolfgang Amadeus Mozart", year_born: 1756, year_died: 1791
-}
+require_relative './composer_class.rb'
+CSV_DELIMITER = ";"
 
+def analyse_composers
+  composers_csv = File.read("composers.csv")
+  composer_lines = composers_csv.split("\n")
 
-def age(number_1, number_2) 
-  
-  names = ["mozart", "kant", "beethoven"]
-  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart?"
-  number_1 = gets.chomp.downcase.to_sym
-  number_2= gets.chomp.downcase.to_sym
-    
-    names = [mozart, kant, beethoven]
-    hash_name = {mozart: mozart, kant: kant, beethoven: beethoven}
-    name_1 = hash_name[number_1]
-    name_2 = hash_name[number_2]
-  if names.include?(person.to_s)
-    lifetime =person[:year_died] - person[:year_born]
-  puts lifetime
-  else
-    puts "Please enter a valid name"
+  composer_lines.each do |composer_line|
+    parts = composer_line.split(CSV_DELIMITER)
+    composer = Composer.new(parts[0], parts[1], parts[2], parts[3])
+
+  end
+end
+def age
+  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart, Bach, Tschaikowski, Wagner, Chopin? You can enter as many as you like, then type run if you want to get the results."
+
+  loop do
+    input = gets.chomp.capitalize
+    if check_name(input.capitalize) || input == "Run"
+      
+      Composer.all.each do |composer|
+        if composer.first_name.include?(input) || composer.last_name.include?(input)
+          composer.select
+        elsif input == "Run"
+          Composer.selected.each do |composer|
+             puts "#{composer.last_name} grew #{composer.age} years old." 
+          end
+          sorted_composers = sort_composers
+          composer_string = compose_output(sorted_composers)
+          puts composer_string
+          break
+        end
+      end
+    elsif check_name(input.capitalize) == false
+      puts "Please enter a valid name."
+    end
   end
 end
 
-age(name_1, name_2)
+def check_name(input) 
+  Composer.all.each do |composer|
+    if composer.first_name.include?(input) || composer.last_name.to_s.include?(input)
+      return true
+    end
+  end
+  return false
+end
+
+def sort_composers
+  sorted_composers = Composer.selected.sort_by { |composer| -composer.age }
+end
+
+def compose_output(composers)
+  composer_string =""
+  composers.each_with_index do |composer, index| 
+    if index == 1 
+      composer_string += " grew older than "
+    elsif index != 0 && index < Composer.selected.length 
+      composer_string += " who grew older than "
+    end
+    if index == (Composer.selected.length - 1)
+      composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old." 
+    else
+      composer_string += "#{composer.first_name} #{composer.last_name}, who grew #{composer.age} years old," 
+    end
+  end
+  return composer_string
+end
+
+
+analyse_composers
+age
 
 
 
