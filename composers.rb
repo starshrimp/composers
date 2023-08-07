@@ -12,7 +12,7 @@ def analyse_composers
   end
 end
 def age
-  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart, Bach, Tschaikowski, Wagner, Chopin? You can enter as many as you like, then type run if you want to get the results."
+  puts "Which people's age do you want to compare: Beethoven, Kant, Mozart, Bach, Tschaikowski, Wagner, Chopin? You can enter as many as you like, then type run to get the results."
 
   loop do
     input = gets.chomp.capitalize
@@ -39,9 +39,7 @@ end
 
 def check_name(input) 
   Composer.all.each do |composer|
-    if composer.first_name.include?(input) || composer.last_name.to_s.include?(input)
-      return true
-    end
+    return true if composer.first_name.include?(input) || composer.last_name.to_s.include?(input)
   end
   return false
 end

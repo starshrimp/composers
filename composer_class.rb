@@ -1,5 +1,5 @@
 class Composer
-  attr_accessor :first_name, :last_name, :year_born, :year_died, :age
+  attr_reader :first_name, :last_name, :year_born, :year_died, :age
   @@all = []
   @@selected = []
   def initialize(first_name, last_name, year_born, year_died)
